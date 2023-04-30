@@ -1,46 +1,24 @@
---[[
+-- bsiegfreid's nvim configuration
 
-=====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
-=====================================================================
+-- started with kickstart.nvim
+-- package manager: lazy
 
-Kickstart.nvim is *not* a distribution.
-
-Kickstart.nvim is a template for your own configuration.
-  The goal is that you can read every line of code, top-to-bottom, and understand
-  what your configuration is doing.
-
-  Once you've done that, you should start exploring, configuring and tinkering to
-  explore Neovim!
-
-  If you don't know anything about Lua, I recommend taking some time to read through
-  a guide. One possible example:
-  - https://learnxinyminutes.com/docs/lua/
-
-  And then you can explore or search through `:help lua-guide`
+-- using my key configuration from vim
+-- buffer nav is [b ]b 
 
 
-Kickstart Guide:
 
-I have left several `:help X` comments throughout the init.lua
-You should run that command and read that help section for more information.
 
-In addition, I have some `NOTE:` items throughout the file.
-These are for you, the reader to help understand what is happening. Feel free to delete
-them once you know what you're doing, but they should serve as a guide for when you
-are first encountering a few different constructs in your nvim config.
-
-I hope you enjoy your Neovim journey,
-- TJ
-
-P.S. You can delete this when you're done too. It's your config now :)
---]]
 
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+
+
+
+
 
 -- Install package manager
 --    https://github.com/folke/lazy.nvim
@@ -187,6 +165,10 @@ require('lazy').setup({
   { import = 'custom.plugins' },
 }, {})
 
+
+
+
+
 -- [[ Setting options ]]
 -- See `:help vim.o`
 
@@ -228,6 +210,10 @@ vim.o.completeopt = 'menuone,noselect'
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
+
+
+
+
 -- [[ Basic Keymaps ]]
 
 -- Keymaps for better default experience
@@ -237,6 +223,32 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+
+-- Functional wrapper for mapping custom keybindings
+function map(mode, lhs, rhs, opts)
+    local options = { noremap = true }
+    if opts then
+        options = vim.tbl_extend("force", options, opts)
+    end
+    vim.api.nvim_set_keymap(mode, lhs, rhs, options)
+end
+
+-- Pane navigation
+map('n', '<C-h>', ':wincmd h<CR>', { silent = true})
+map('n', '<C-j>', ':wincmd j<CR>', { silent = true})
+map('n', '<C-k>', ':wincmd k<CR>', { silent = true})
+map('n', '<C-l>', ':wincmd l<CR>', { silent = true})
+
+-- Buffer navigation
+map('n', '[b', ':bp<CR>', { silent = true })
+map('n', ']b', ':bn<CR>', { silent = true })
+
+-- Neotree
+map('n', '<leader>t', ':Neotree<CR>', { silent = true })
+
+
+
+
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -248,6 +260,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   group = highlight_group,
   pattern = '*',
 })
+
+
+
+
 
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
@@ -282,6 +298,10 @@ vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
+
+
+
+
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
